@@ -9,6 +9,7 @@ public extension WebArchive {
 
     func makeData() throws -> Data {
         let encoder = PropertyListEncoder()
+        encoder.outputFormat = .binary
         return try encoder.encode(self)
     }
 }

@@ -25,6 +25,21 @@ final class WebArchiveTests: XCTestCase {
         XCTAssertEqual(actual.subresources?[0].mimeType, "image/jpeg")
         XCTAssertNil(actual.subframeArchives)
     }
+    
+    func testCanArchiveAndUnarchive() throws {
+        let data = try XCTUnwrap(loadArchive(forResource: "Resources/Notes"))
+        let webarchive = try WebArchive(data: data)
+        
+        let newData = try webarchive.makeData()
+        let newWebarchive = try WebArchive(data: newData)
+        
+        XCTAssertEqual(webarchive.mainResource.data.count, newWebarchive.mainResource.data.count)
+        XCTAssertEqual(webarchive.mainResource.mimeType, newWebarchive.mainResource.mimeType)
+        XCTAssertEqual(webarchive.mainResource.textEncodingName, newWebarchive.mainResource.textEncodingName)
+        XCTAssertEqual(webarchive.mainResource.urlString, newWebarchive.mainResource.urlString)
+        XCTAssertEqual(webarchive.subresources?.count, newWebarchive.subresources?.count)
+        XCTAssertEqual(webarchive.subresources?[0].mimeType, newWebarchive.subresources?[0].mimeType)
+    }
 
     private func loadArchive(forResource resource: String) -> Data? {
         Bundle.module.url(forResource: resource, withExtension: "webarchive").flatMap { try? Data(contentsOf: $0) }
